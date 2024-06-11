@@ -2,18 +2,34 @@ package br.com.dio.desafio.dominio;
 
 import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 public class Dev {
 	private String nome;
 	private Set<Conteudo>conteudosInscritos=new LinkedHashSet<>();
-	private Set<Conteudo> SetConteudo=new LinkedHashSet<>();
+	private Set<Conteudo> conteudosConcluidos=new LinkedHashSet<>();
 	
-	public void inscreverBootcamp(Bootcamp bootcamp) {}
+	public void inscreverBootcamp(Bootcamp bootcamp) {
+		this.conteudosInscritos.addAll(bootcamp.getConteudos());
+		bootcamp.getDevsInscritos().add(this);
+	}
 	
-	public void progredir() {}
+	public void progredir() {
+		Optional<Conteudo>conteudo=this.conteudosInscritos.stream().findFirst();
+		if(conteudo.isPresent()) {
+			this.conteudosConcluidos.add(conteudo.get());
+			this.conteudosInscritos.remove(conteudo.get());
+		}
+		else {
+			System.err.println("Você não está matriculado em nenhum conteúdo");
+		}
+	}
 	
-	public void calcularXp() {}
+	public double calcularXp() {
+		return this.conteudosConcluidos.stream().mapToDouble(conteudo->conteudo.calcularXp()).sum();
+		
+	}
 	
 	
 
@@ -33,17 +49,17 @@ public class Dev {
 		this.conteudosInscritos = conteudosInscritos;
 	}
 
-	public Set<Conteudo> getSetConteudo() {
-		return SetConteudo;
+	public Set<Conteudo> getconteudosConcluidos() {
+		return conteudosConcluidos;
 	}
 
-	public void setSetConteudo(Set<Conteudo> setConteudo) {
-		SetConteudo = setConteudo;
+	public void setconteudosConcluidos(Set<Conteudo> conteudosConcluidos) {
+		this.conteudosConcluidos = conteudosConcluidos;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(SetConteudo, conteudosInscritos, nome);
+		return Objects.hash(conteudosConcluidos, conteudosInscritos, nome);
 	}
 
 	@Override
@@ -55,8 +71,13 @@ public class Dev {
 		if (getClass() != obj.getClass())
 			return false;
 		Dev other = (Dev) obj;
-		return Objects.equals(SetConteudo, other.SetConteudo)
+		return Objects.equals(conteudosConcluidos, other.conteudosConcluidos)
 				&& Objects.equals(conteudosInscritos, other.conteudosInscritos) && Objects.equals(nome, other.nome);
+	}
+
+	@Override
+	public String toString() {
+		return  nome+ " "+ conteudosInscritos + super.toString() ;
 	}
 	
 	

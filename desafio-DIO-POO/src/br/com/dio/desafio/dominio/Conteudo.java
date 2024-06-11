@@ -25,11 +25,12 @@ public abstract class Conteudo {
 		return xp_padrao;
 	}
 
-	
-	
-	public abstract double calcularXp();
-	
+	protected abstract double calcularXp();
+
+
+
+	}
+
 	
 	
 
-}
